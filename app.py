@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -9,6 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 )
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'your_secret_key_here'
 
 db = SQLAlchemy(app)
 
@@ -35,55 +36,79 @@ class User(db.Model):
 
 @app.route("/")
 def home():
-    return render_template('login.html')
+    return render_template('dashboard.html')
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        
+
         email = request.form['email']
         password = request.form['password']
 
         user = User.query.filter_by(email=email).first()
 
         if user and user.password == password:
+            if user.role == 'student':
+                session['user_id'] = user.id
+                session['user_name'] = user.name
+                session['user_email'] = user.email
+                return redirect(url_for('student'))
             return "Login Successful!"
-
-        elif user.role == 'student':
-            return redirect(url_for('dashboard'))
 
         return "Invalid email or password!"
     return render_template('login.html')
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
 
-    # When user opens /register
-    if request.method == "GET":
-        return render_template("register.html")
+    if request.method == 'POST':
 
-    # When user submits the form
-    name = request.form["name"]
-    email = request.form["email"]
-    branch = request.form["branch"]
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
 
-    # Create student object
-    student = Student(
-        name=name,
-        email=email,
-        branch=branch
-    )
+        roll_number = request.form['roll_number']
+        branch = request.form['branch']
+        cgpa = request.form['cgpa']
+        backlogs = request.form['backlogs']
+        skills = request.form['skills']
 
-    # Insert into database
-    db.session.add(student)
-    db.session.commit()
+        if password != confirm_password:
+            return "Passwords do not match!"
 
-    return "Registration successful!"
+        # Create user
+        user = User(
+            name=name,
+            email=email,
+            password=password,
+            role='student'
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect('/login')
+
+    return render_template('register.html')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('dashboard'))
 
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/student')
+def student():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    return render_template('student.html', user_name=session.get('user_name'))
 
 
 if __name__ == "__main__":
