@@ -13,6 +13,7 @@ CREATE TABLE users (
 
 CREATE TABLE students (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
     user_id INT NOT NULL,
     roll_no VARCHAR(50) NOT NULL UNIQUE,
     branch VARCHAR(100),
