@@ -1,10 +1,25 @@
+import os
+from urllib.parse import quote_plus
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+mysql_user = os.getenv('MYSQL_USER', 'root')
+mysql_password = os.getenv('MYSQL_PASSWORD')
+mysql_host = os.getenv('MYSQL_HOST', 'localhost')
+mysql_port = os.getenv('MYSQL_PORT', '3306')
+
+if not mysql_password:
+    raise RuntimeError(
+        'MYSQL_PASSWORD is not set. Start the app with: '
+        'export MYSQL_PASSWORD="your MySQL password"'
+    )
+
 app.config['SQLALCHEMY_DATABASE_URI'] = (
-    'mysql+pymysql://root@localhost/placement_db'
+    f'mysql+pymysql://{mysql_user}:{quote_plus(mysql_password)}'
+    f'@{mysql_host}:{mysql_port}/placement_db'
     '?unix_socket=/tmp/mysql.sock'
 )
 
@@ -87,6 +102,19 @@ def register():
         )
 
         db.session.add(user)
+        db.session.flush()
+
+        student = Student(
+            name=name,
+            email=email,
+            password=password,
+            roll_number=roll_number,
+            branch=branch,
+            cgpa=float(cgpa),
+            backlogs=int(backlogs),
+            skills=skills
+        )
+        db.session.add(student)
         db.session.commit()
 
         return redirect('/login')
