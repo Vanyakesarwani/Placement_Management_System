@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile</title>
+</head>
+
+<body>
+
+    <h1>My Profile</h1>
+
+    <hr>
+
+    <p><strong>Name:</strong> {{ student.name }}</p>
+
+    <p><strong>Email:</strong> {{ student.email }}</p>
+
+    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+
+    <p><strong>Branch:</strong> {{ student.branch }}</p>
+
+    <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
+
+    <p><strong>Backlogs:</strong> {{ student.backlogs }}</p>
+
+    <p><strong>Skills:</strong> {{ student.skills }}</p>
+
+    <hr>
+
+    <a href="{{ url_for('student') }}">
+        Back to Dashboard
+    </a>
+
+</body>
+</html>

@@ -10,7 +10,7 @@ CREATE TABLE users (
     role ENUM('student', 'admin') NOT NULL
 );
 
-CREATE TABLE students (
+CREATE TABLE students(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     user_id INT NOT NULL,

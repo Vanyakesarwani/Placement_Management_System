@@ -67,6 +67,7 @@ def login():
                 session['user_id'] = user.id
                 session['user_name'] = user.name
                 session['user_email'] = user.email
+                session['role'] = user.role
                 return redirect(url_for('student'))
             return "Login Successful!"
 
@@ -138,6 +139,35 @@ def student():
     
     return render_template('student.html', user_name=session.get('user_name'))
 
+@app.route('/student/profile')
+def student_profile():
+
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    if session.get('role') != 'student':
+        return redirect(url_for('login'))
+
+    user = db.session.get(User, session['user_id'])
+    student = Student.query.filter_by(email=user.email).first() if user else None
+
+    if user is None:
+        return redirect(url_for('login'))
+
+    profile = {
+        'name': student.name if student else user.name,
+        'email': user.email,
+        'roll_number': student.roll_number if student else '',
+        'branch': student.branch if student else '',
+        'cgpa': student.cgpa if student else '',
+        'backlogs': student.backlogs if student else '',
+        'skills': student.skills if student else ''
+    }
+
+    return render_template(
+        'profile.html',
+        student=profile
+    )
 
 if __name__ == "__main__":
     with app.app_context():
