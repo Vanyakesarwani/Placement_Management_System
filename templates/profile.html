@@ -8,21 +8,70 @@
 
     <h1>My Profile</h1>
 
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
     <hr>
 
-    <p><strong>Name:</strong> {{ student.name }}</p>
+    <form method="POST">
 
-    <p><strong>Email:</strong> {{ student.email }}</p>
+        <p>
+            <strong>Name:</strong>
+            {{ student.name }}
+        </p>
 
-    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+        <p>
+            <strong>Email:</strong>
+            {{ student.email }}
+        </p>
 
-    <p><strong>Branch:</strong> {{ student.branch }}</p>
+        <p>
+            <label>Roll Number:</label>
+            <input type="text"
+                   name="roll_number"
+                   value="{{ student.roll_number or '' }}"
+                   required>
+        </p>
 
-    <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
+        <p>
+            <label>Branch:</label>
+            <input type="text"
+                   name="branch"
+                   value="{{ student.branch or '' }}"
+                   required>
+        </p>
 
-    <p><strong>Backlogs:</strong> {{ student.backlogs }}</p>
+        <p>
+            <label>CGPA:</label>
+            <input type="number"
+                   name="cgpa"
+                   step="0.01"
+                   min="0"
+                   max="10"
+                   value="{{ student.cgpa or '' }}"
+                   required>
+        </p>
 
-    <p><strong>Skills:</strong> {{ student.skills }}</p>
+        <p>
+            <label>Backlogs:</label>
+            <input type="number"
+                   name="backlogs"
+                   min="0"
+                   value="{{ student.backlogs or '' }}"
+                   required>
+        </p>
+
+        <p>
+            <label>Skills:</label>
+            <input type="text"
+                   name="skills"
+                   value="{{ student.skills or '' }}">
+        </p>
+
+        <button type="submit">Save Changes</button>
+
+    </form>
 
     <hr>
 

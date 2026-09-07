@@ -139,34 +139,53 @@ def student():
     
     return render_template('student.html', user_name=session.get('user_name'))
 
-@app.route('/student/profile')
+@app.route('/student/profile', methods=['GET', 'POST'])
 def student_profile():
 
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
-    if session.get('role') != 'student':
-        return redirect(url_for('login'))
-
     user = db.session.get(User, session['user_id'])
-    student = Student.query.filter_by(email=user.email).first() if user else None
-
     if user is None:
+        session.clear()
         return redirect(url_for('login'))
 
-    profile = {
-        'name': student.name if student else user.name,
-        'email': user.email,
-        'roll_number': student.roll_number if student else '',
-        'branch': student.branch if student else '',
-        'cgpa': student.cgpa if student else '',
-        'backlogs': student.backlogs if student else '',
-        'skills': student.skills if student else ''
-    }
+    if user.role != 'student':
+        return redirect(url_for('login'))
+
+    student = Student.query.filter_by(email=user.email).first()
+
+    if request.method == 'POST':
+        try:
+            cgpa = float(request.form['cgpa'])
+            backlogs = int(request.form['backlogs'])
+        except ValueError:
+            return render_template(
+                'profile.html',
+                student=student,
+                error='CGPA and backlogs must be valid numbers.'
+            )
+
+        if student is None:
+            student = Student(
+                name=user.name,
+                email=user.email,
+                password=user.password
+            )
+            db.session.add(student)
+
+        student.roll_number = request.form['roll_number']
+        student.branch = request.form['branch']
+        student.cgpa = cgpa
+        student.backlogs = backlogs
+        student.skills = request.form['skills']
+        db.session.commit()
+
+        return redirect(url_for('student_profile'))
 
     return render_template(
         'profile.html',
-        student=profile
+        student=student
     )
 
 if __name__ == "__main__":
