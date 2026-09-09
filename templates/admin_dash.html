@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Placement Management System</h1>
+
+    <h2>Admin Dashboard</h2>
+
+    <p>Welcome, Admin!</p>
+
+    <hr>
+
+    <h3>Admin Menu</h3>
+
+    <ul>
+        <li>
+            <a href="{{ url_for('companies') }}">
+                Manage Companies
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                Manage Jobs
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                View Applications
+            </a>
+        </li>
+    </ul>
+
+    <hr>
+
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+</body>
+</html>

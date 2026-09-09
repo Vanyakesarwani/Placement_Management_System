@@ -18,19 +18,19 @@
 
         <p>
             <strong>Name:</strong>
-            {{ student.name }}
+            {{ user.name if user else student.name }}
         </p>
 
         <p>
             <strong>Email:</strong>
-            {{ student.email }}
+            {{ user.email if user else student.email }}
         </p>
 
         <p>
             <label>Roll Number:</label>
             <input type="text"
                    name="roll_number"
-                   value="{{ student.roll_number or '' }}"
+                   value="{{ student.roll_number if student else '' }}"
                    required>
         </p>
 
@@ -38,7 +38,7 @@
             <label>Branch:</label>
             <input type="text"
                    name="branch"
-                   value="{{ student.branch or '' }}"
+                   value="{{ student.branch if student else '' }}"
                    required>
         </p>
 
@@ -49,7 +49,7 @@
                    step="0.01"
                    min="0"
                    max="10"
-                   value="{{ student.cgpa or '' }}"
+                   value="{{ student.cgpa if student else '' }}"
                    required>
         </p>
 
@@ -58,7 +58,7 @@
             <input type="number"
                    name="backlogs"
                    min="0"
-                   value="{{ student.backlogs or '' }}"
+                   value="{{ student.backlogs if student else '' }}"
                    required>
         </p>
 
@@ -66,7 +66,7 @@
             <label>Skills:</label>
             <input type="text"
                    name="skills"
-                   value="{{ student.skills or '' }}">
+                   value="{{ student.skills if student else '' }}">
         </p>
 
         <button type="submit">Save Changes</button>

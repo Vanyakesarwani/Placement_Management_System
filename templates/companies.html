@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Companies</title>
+</head>
+
+<body>
+
+    <h1>Manage Companies</h1>
+
+    <hr>
+
+    <h2>Add Company</h2>
+
+    <form method="POST">
+
+        <label>Company Name:</label>
+        <input type="text" name="name" required>
+
+        <br><br>
+
+        <label>Location:</label>
+        <input type="text" name="location">
+
+        <br><br>
+
+        <button type="submit">Add Company</button>
+
+    </form>
+
+    <hr>
+
+    <h2>Companies</h2>
+
+    {% for company in companies %}
+
+        <p>
+            <strong>{{ company.name }}</strong>
+            - {{ company.location }}
+        </p>
+
+    {% else %}
+
+        <p>No companies added yet.</p>
+
+    {% endfor %}
+
+    <hr>
+
+    <a href="{{ url_for('admin_dashboard') }}">
+        Back to Admin Dashboard
+    </a>
+
+</body>
+</html>

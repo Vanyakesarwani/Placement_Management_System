@@ -60,4 +60,3 @@ CREATE TABLE applications (
 
     UNIQUE (student_id, job_id)
 );
-
